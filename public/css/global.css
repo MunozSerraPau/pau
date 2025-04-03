@@ -17,6 +17,8 @@ body {
     background-attachment: fixed;
 }
 
-main {
-    
+.floating-panel {
+    backdrop-filter: blur(10px) !important;
+    border: 3px solid red /*#454962*/ !important;
+    border-radius: 25px !important;
 }

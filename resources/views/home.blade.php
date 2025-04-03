@@ -13,10 +13,12 @@
     <body class="bg-light">
         <x-header />
 
-        <main class="container d-flex flex-column align-items-center my-5">
-            <h1>HOME</h1>
-            <p>Esta es la página de Home.</p>
-            <x-campeones-list />
+        <main class="container d-flex flex-column align-items-center my-5 floating-panel">
+            <div class="floating-panel">
+                <h1>HOME</h1>
+                <p>Esta es la página de Home.</p>
+                <x-campeones-list />
+            </div>
         </main>
 
         <x-footer />
