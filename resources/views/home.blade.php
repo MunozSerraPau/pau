@@ -14,10 +14,24 @@
         <x-header />
 
         <main class="container d-flex flex-column align-items-center my-5 floating-panel">
-            <div class="floating-panel">
+            <div class="">
                 <h1>HOME</h1>
                 <p>Esta es la página de Home.</p>
-                <x-campeones-list />
+                @php
+                    $allowedValues = [9, 12, 15]; // Valores permitidos
+                    $perPage = in_array(request('perPage'), $allowedValues) ? request('perPage') : 9; // Validar valor
+                @endphp
+
+                <form method="GET" action="{{ route('home') }}" class="mb-4">
+                    <label for="perPage">Campeones por página:</label>
+                    <select name="perPage" id="perPage" onchange="this.form.submit()">
+                        <option value="9" {{ $perPage == 9 ? 'selected' : '' }}>9</option>
+                        <option value="12" {{ $perPage == 12 ? 'selected' : '' }}>12</option>
+                        <option value="15" {{ $perPage == 15 ? 'selected' : '' }}>15</option>
+                    </select>
+                </form>
+
+                <x-campeones-list :perPage="$perPage" />
             </div>
         </main>
 

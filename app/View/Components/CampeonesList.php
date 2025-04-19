@@ -9,13 +9,13 @@ class CampeonesList extends Component
 {
     public $campeones;
 
-    public function __construct()
+    public function __construct($perPage = 9)
     {
-        $this->campeones = Campeon::all();
+        $this->campeones = Campeon::paginate($perPage)->appends(['perPage' => $perPage]);
     }
 
     public function render()
     {
-        return view('components.campeones-list');
+        return view('components.campeones-list', ['campeones' => $this->campeones]);
     }
 }
