@@ -29,9 +29,15 @@
                         <option value="12" {{ $perPage == 12 ? 'selected' : '' }}>12</option>
                         <option value="15" {{ $perPage == 15 ? 'selected' : '' }}>15</option>
                     </select>
+
+                    <label for="order" class="ms-3">Ordenar por:</label>
+                    <select name="order" id="order" onchange="this.form.submit()">
+                        <option value="asc" {{ $order == 'asc' ? 'selected' : '' }}>Ascendente</option>
+                        <option value="desc" {{ $order == 'desc' ? 'selected' : '' }}>Descendente</option>
+                    </select>
                 </form>
 
-                <x-campeones-list :perPage="$perPage" />
+                <x-campeones-list :perPage="$perPage" :order="$order" />
             </div>
         </main>
 

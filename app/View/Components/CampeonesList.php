@@ -9,9 +9,11 @@ class CampeonesList extends Component
 {
     public $campeones;
 
-    public function __construct($perPage = 9)
+    public function __construct($perPage = 9, $order = 'asc')
     {
-        $this->campeones = Campeon::paginate($perPage)->appends(['perPage' => $perPage]);
+        $this->campeones = Campeon::orderBy('name', $order)
+            ->paginate($perPage)
+            ->appends(['perPage' => $perPage, 'order' => $order]);
     }
 
     public function render()
