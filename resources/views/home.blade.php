@@ -14,12 +14,45 @@
         <x-header />
 
         <main class="container d-flex flex-column align-items-center my-5 floating-panel">
-            <div class="floating-panel">
-                <h1>HOME</h1>
-                <p>Esta es la página de Home.</p>
-                <x-campeones-list />
+            <div>
+                <h1 class="text-center mb-5 text-white">INDEX</h1>
+                <x-search-bar />
+                <div class="mb-3">
+                    <label for="perPage" class="form-label text-white">Campeones por página:</label>
+                    <select id="perPage" class="form-select">
+                        <option value="9" selected>9</option>
+                        <option value="12">12</option>
+                        <option value="15">15</option>
+                    </select>
+                </div>
+                <div id="campeones-list">
+                    <x-campeones-list :campeones="$campeones" /> <!-- Pasamos la variable completa -->
+                </div>
             </div>
         </main>
+
+        <script>
+            const perPageSelect = document.getElementById('perPage');
+            const searchInput = document.querySelector('input[name="query"]');
+
+            function fetchCampeones() {
+                const query = searchInput.value;
+                const perPage = perPageSelect.value;
+
+                fetch(`{{ route('campeones.search') }}?query=${query}&perPage=${perPage}`, {
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest'
+                    }
+                })
+                .then(response => response.text())
+                .then(html => {
+                    document.getElementById('campeones-list').innerHTML = html;
+                });
+            }
+
+            perPageSelect.addEventListener('change', fetchCampeones);
+            searchInput.addEventListener('input', fetchCampeones);
+        </script>
 
         <x-footer />
     </body>
