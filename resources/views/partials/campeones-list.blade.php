@@ -13,5 +13,5 @@
 </div>
 
 <div class="d-flex justify-content-center mt-4">
-    {!! $campeones->appends(request()->query())->links() !!}
+    {{ $campeones->links() }}
 </div>

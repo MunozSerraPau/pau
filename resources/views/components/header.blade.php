@@ -58,7 +58,6 @@
             <a class="nav-link" href="{{ route('login') }}">LOGIN</a>
             </li>
             <li class="nav-item">
-            <a class="nav-link" href="{{ route('singup') }}">SING UP</a>
             </li>
         </ul>
         </div>

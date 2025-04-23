@@ -17,12 +17,13 @@
             <div class="">
                 <h1>HOME</h1>
                 <p>Esta es la página de Home.</p>
+                
                 @php
                     $allowedValues = [9, 12, 15]; // Valores permitidos
                     $perPage = in_array(request('perPage'), $allowedValues) ? request('perPage') : 9; // Validar valor
                 @endphp
 
-                <form method="GET" action="{{ route('home') }}" class="mb-4">
+                <form method="GET" action="{{ route('home') }}" class="mb-4" id="searchForm">
                     <label for="perPage">Campeones por página:</label>
                     <select name="perPage" id="perPage" onchange="this.form.submit()">
                         <option value="9" {{ $perPage == 9 ? 'selected' : '' }}>9</option>
@@ -35,12 +36,37 @@
                         <option value="asc" {{ $order == 'asc' ? 'selected' : '' }}>Ascendente</option>
                         <option value="desc" {{ $order == 'desc' ? 'selected' : '' }}>Descendente</option>
                     </select>
+
+                    <label for="search" class="ms-3">Buscar:</label>
+                    <input type="text" id="search" name="search" class="form-control d-inline-block w-auto" 
+                           placeholder="Buscar campeones..." value="{{ request('search') }}">
                 </form>
 
-                <x-campeones-list :perPage="$perPage" :order="$order" />
+                <div id="campeones-list">
+                    <x-campeones-list :perPage="$perPage" :order="$order" />
+                </div>
             </div>
         </main>
 
         <x-footer />
+
+        <script>
+            document.getElementById('searchForm').addEventListener('submit', function (e) {
+                e.preventDefault(); // Prevenir el envío del formulario
+            });
+
+            document.getElementById('search').addEventListener('input', function () {
+                const search = this.value;
+                const order = document.getElementById('order').value;
+                const perPage = document.getElementById('perPage').value;
+
+                fetch(`{{ route('search-campeones') }}?search=${search}&order=${order}&perPage=${perPage}`)
+                    .then(response => response.text())
+                    .then(html => {
+                        document.getElementById('campeones-list').innerHTML = html;
+                    })
+                    .catch(error => console.error('Error:', error));
+            });
+        </script>
     </body>
 </html>
