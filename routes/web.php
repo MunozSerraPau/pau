@@ -5,6 +5,7 @@ use App\Models\Campeon;
 use App\Http\Controllers\Auth\LoginController;
 
 
+use App\Http\Controllers\CampeonController;
 
 // Home
 Route::get('/', function () {
@@ -37,3 +38,6 @@ Route::get('/search-campeones', function () {
 
     return view('partials.campeones-list', compact('campeones'));
 })->name('search-campeones');
+
+
+Route::get('/campeones/search', [CampeonController::class, 'search'])->name('campeones.search');

@@ -48,6 +48,29 @@
             </div>
         </main>
 
+        <script>
+            const perPageSelect = document.getElementById('perPage');
+            const searchInput = document.querySelector('input[name="query"]');
+
+            function fetchCampeones() {
+                const query = searchInput.value;
+                const perPage = perPageSelect.value;
+
+                fetch(`{{ route('campeones.search') }}?query=${query}&perPage=${perPage}`, {
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest'
+                    }
+                })
+                .then(response => response.text())
+                .then(html => {
+                    document.getElementById('campeones-list').innerHTML = html;
+                });
+            }
+
+            perPageSelect.addEventListener('change', fetchCampeones);
+            searchInput.addEventListener('input', fetchCampeones);
+        </script>
+
         <x-footer />
 
         <script>
