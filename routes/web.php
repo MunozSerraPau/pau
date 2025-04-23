@@ -8,6 +8,7 @@ use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\CampeonController;
 use App\Http\Controllers\Auth\PasswordResetController;
 
+use App\Http\Controllers\Auth\RegisterController;
 
 
 // Home
@@ -40,6 +41,9 @@ Route::post('/forgot-password', [PasswordResetController::class, 'sendResetLink'
 Route::get('/reset-password', [PasswordResetController::class, 'showResetForm'])->name('password.reset');
 Route::post('/reset-password', [PasswordResetController::class, 'reset'])->name('password.update');
 
+//Registro
+Route::get('/register', [RegisterController::class, 'show'])->name('register');
+Route::post('/register', [RegisterController::class, 'store']);
 
 // Busqueda de campeones
 Route::get('/search-campeones', function () {
@@ -56,3 +60,6 @@ Route::get('/search-campeones', function () {
 
 
 Route::get('/campeones/search', [CampeonController::class, 'search'])->name('campeones.search');
+
+// Home user 
+Route::get('/home-user/campeones', [CampeonController::class, 'userCampeones'])->name('campeones.user');

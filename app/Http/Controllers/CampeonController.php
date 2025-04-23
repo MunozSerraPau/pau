@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Campeon;
+use Illuminate\Support\Facades\Auth;
 
 class CampeonController extends Controller
 {
@@ -32,6 +33,22 @@ class CampeonController extends Controller
 
         // Asegúrate de pasar la variable $campeones a la vista.
         return view('home', compact('campeones'));
+    }
+
+    public function userCampeones(Request $request)
+    {
+        $userNickname = Auth::user()->nom; // Obtener el nombre del usuario logueado
+        $query = $request->input('query', '');
+        $perPage = $request->input('perPage', 9); // Valor por defecto: 9
+        $order = $request->input('order', 'asc'); // Valor por defecto: ascendente
+
+        $campeones = Campeon::where('creator', $userNickname)
+            ->where('name', 'like', '%' . $query . '%')
+            ->orderBy('name', $order)
+            ->paginate($perPage);
+
+        // Asegúrate de pasar todas las variables necesarias a la vista
+        return view('home-user', compact('campeones', 'perPage', 'order', 'query'));
     }
 
     // ...existing code...

@@ -13,6 +13,9 @@
     <main class="container d-flex justify-content-center align-items-center my-5">
         <div class="card shadow p-4 bg-light" style="max-width: 400px; width: 100%;">
             <h1>Iniciar Sessió</h1>
+            @if (session('success'))
+                <div style="color: green;">{{ session('success') }}</div>
+            @endif
             <form method="POST" action="{{ route('login') }}">
                 @csrf
                 <label>Nickname:</label>
@@ -27,7 +30,6 @@
                 <br>
                 <p>Has oblidat la contrasenya? <a href="{{ route('password.request') }}">Recuperar</a></p>
                 <button type="submit">Entrar</button>
-
             </form>
             @if ($errors->any())
                 <div>
