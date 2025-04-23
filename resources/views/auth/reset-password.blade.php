@@ -12,32 +12,28 @@
 
     <main class="container d-flex justify-content-center align-items-center my-5">
         <div class="card shadow p-4 bg-light" style="max-width: 400px; width: 100%;">
-            <h1>Iniciar Sessió</h1>
-            <form method="POST" action="{{ route('login') }}">
-                @csrf
-                <label>Nickname:</label>
-                <input type="text" name="nickname" value="{{ old('nickname', request()->cookie('nickname')) }}" required>
-                <br>
-                <label>Contrasenya:</label>
-                <input type="password" name="password" required>
-                <br>
-                <label>
-                    <input type="checkbox" name="remember_nickname"> Recorda’m
-                </label>
-                <br>
-                <p>Has oblidat la contrasenya? <a href="{{ route('password.request') }}">Recuperar</a></p>
-                <button type="submit">Entrar</button>
+            <h1>Nova contrasenya</h1>
 
+            <form method="POST" action="{{ route('password.update') }}">
+                @csrf
+                <input type="hidden" name="token" value="{{ $token }}">
+                
+                <label>Nova contrasenya:</label>
+                <input type="password" name="password" required>
+
+                <label>Repeteix contrasenya:</label>
+                <input type="password" name="password_confirmation" required>
+
+                <button type="submit">Canviar</button>
             </form>
+
             @if ($errors->any())
-                <div>
-                    <strong>Error:</strong> {{ $errors->first() }}
-                </div>
+                <p>{{ $errors->first() }}</p>
             @endif
+
         </div>
     </main>
 
     <x-footer />
 </body>
 </html>
-

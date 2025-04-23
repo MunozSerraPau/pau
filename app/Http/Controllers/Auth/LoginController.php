@@ -28,7 +28,15 @@ class LoginController extends Controller
         if ($usuari && password_verify($credentials['password'], $usuari->contrasenya)) {
             Auth::login($usuari); // login manual
             $request->session()->regenerate();
-            return redirect()->intended('home-user');
+            $response = redirect()->intended('home-user');
+
+            if ($request->has('remember_nickname')) {
+                $response->withCookie(cookie('nickname', $credentials['nickname'], 60 * 24)); // 24h
+            } else {
+                $response->withoutCookie('nickname');
+            }
+
+            return $response;
         }
 
         return back()->withErrors([
@@ -41,6 +49,6 @@ class LoginController extends Controller
         Auth::logout();
         $request->session()->invalidate();
         $request->session()->regenerateToken();
-        return redirect('/login');
+        return redirect('/');
     }
 }

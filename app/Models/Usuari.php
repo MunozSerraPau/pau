@@ -11,8 +11,8 @@ class Usuari extends Authenticatable
 
     protected $table = 'usuaris';
     protected $primaryKey = 'nickname'; // si el login será con nickname
-
     public $incrementing = false;
+    protected $keyType = 'string'; // ya que nickname no es numérico
     public $timestamps = false;
 
     protected $fillable = [

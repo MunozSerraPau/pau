@@ -6,6 +6,9 @@ use App\Http\Controllers\Auth\LoginController;
 
 
 use App\Http\Controllers\CampeonController;
+use App\Http\Controllers\Auth\PasswordResetController;
+
+
 
 // Home
 Route::get('/', function () {
@@ -17,13 +20,25 @@ Route::get('/', function () {
 })->name('home');
 
 
+//LOGIN / LOGOUT
+//Login
 Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
 Route::post('/login', [LoginController::class, 'login']);
+
+//Logout
 Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 
+//Redirección a la página de inicio después de iniciar sesión
 Route::get('/home-user', function () {
     return view('home-user');
-});
+})->middleware('auth');;
+
+//Recuperar contraseña via correo electrónico
+Route::get('/forgot-password', [PasswordResetController::class, 'showRequestForm'])->name('password.request');
+Route::post('/forgot-password', [PasswordResetController::class, 'sendResetLink'])->name('password.email');
+
+Route::get('/reset-password', [PasswordResetController::class, 'showResetForm'])->name('password.reset');
+Route::post('/reset-password', [PasswordResetController::class, 'reset'])->name('password.update');
 
 
 // Busqueda de campeones
