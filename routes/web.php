@@ -11,6 +11,9 @@ use App\Http\Controllers\Auth\PasswordResetController;
 
 use App\Http\Controllers\Auth\RegisterController;
 
+use App\Http\Controllers\PerfilController;
+use App\Http\Controllers\EquipoController;
+
 
 // Home
 Route::get('/', function () {
@@ -76,3 +79,29 @@ Route::delete('/campeones/{id}/eliminar', [CampeonControllerLogin::class, 'destr
 //Crear Champion
 Route::get('/campeones/crear', [CampeonControllerLogin::class, 'create'])->name('campeones.create')->middleware('auth');
 Route::post('/campeones/guardar', [CampeonControllerLogin::class, 'store'])->name('campeones.store')->middleware('auth');
+
+
+// Vistas dentro del Login
+Route::middleware(['auth'])->group(function () {
+
+    // 🧑‍💼 Editar Perfil
+    Route::get('/perfil/editar', [PerfilController::class, 'edit'])->name('perfil.edit');
+    Route::put('/perfil/actualizar', [PerfilController::class, 'update'])->name('perfil.update');
+
+    // 🔒 Cambiar contraseña
+    Route::get('/perfil/cambiar-contrasenya', [PerfilController::class, 'editPassword'])->name('perfil.password');
+    Route::put('/perfil/cambiar-contrasenya', [PerfilController::class, 'updatePassword'])->name('perfil.password.update');
+
+    // 🛡️ Crear equipo
+    Route::get('/equipos/crear')->name('equipos.create');
+    Route::post('/equipos')->name('equipos.store');
+
+    // 👥 Ver equipos
+    Route::get('/equipos')->name('equipos.index');
+
+    // 👁️ Ver equipo individual (detalles)
+    Route::get('/equipos/{equipo}')->name('equipos.show');
+
+    // 📝 Editar usuarios
+    Route::get('/admin/usuarios')->name('admin.usuaris.index');
+});

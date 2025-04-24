@@ -12,7 +12,14 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('usuaris', function (Blueprint $table) {
-            $table->id();
+            $table->string('nom')->nullable();
+            $table->string('cognoms');
+            $table->string('correu')->unique();
+            $table->string('nickname')->primary();
+            $table->text('contrasenya')->nullable();
+            $table->string('xarxa_social', 25)->nullable();
+            $table->boolean('administrador')->default(false);
+            $table->string('imgPerfil')->nullable();
             $table->timestamps();
         });
     }

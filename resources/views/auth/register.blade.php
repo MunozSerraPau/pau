@@ -60,6 +60,6 @@
             </div>
         </main>
 
-        <x-footer /> <!--Incluye el footer -->
+        <x-footer />
     </body>
 </html>
