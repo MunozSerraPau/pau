@@ -6,6 +6,7 @@ use App\Http\Controllers\Auth\LoginController;
 
 
 use App\Http\Controllers\CampeonController;
+use App\Http\Controllers\CampeonControllerLogin;
 use App\Http\Controllers\Auth\PasswordResetController;
 
 use App\Http\Controllers\Auth\RegisterController;
@@ -30,8 +31,8 @@ Route::post('/login', [LoginController::class, 'login']);
 Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 
 //Redirección a la página de inicio después de iniciar sesión
-Route::get('/home-user', function () {
-    return view('home-user');
+Route::get('/home-users', function () {
+    return view('home-users');
 })->middleware('auth');;
 
 //Recuperar contraseña via correo electrónico
@@ -62,4 +63,16 @@ Route::get('/search-campeones', function () {
 Route::get('/campeones/search', [CampeonController::class, 'search'])->name('campeones.search');
 
 // Home user 
-Route::get('/home-user/campeones', [CampeonController::class, 'userCampeones'])->name('campeones.user');
+Route::get('/home-users', [CampeonControllerLogin::class, 'index'])->name('home-users')->middleware('auth');
+Route::get('/campeones/ajax', [CampeonControllerLogin::class, 'ajax'])->name('campeones.ajax')->middleware('auth');
+
+//Editar Champions
+Route::get('/campeones/{id}/editar', [CampeonControllerLogin::class, 'edit'])->name('campeones.edit')->middleware('auth');
+Route::post('/campeones/{id}/actualizar', [CampeonControllerLogin::class, 'update'])->name('campeones.update')->middleware('auth');
+
+//Eliminar Champions
+Route::delete('/campeones/{id}/eliminar', [CampeonControllerLogin::class, 'destroy'])->name('campeones.destroy')->middleware('auth');
+
+//Crear Champion
+Route::get('/campeones/crear', [CampeonControllerLogin::class, 'create'])->name('campeones.create')->middleware('auth');
+Route::post('/campeones/guardar', [CampeonControllerLogin::class, 'store'])->name('campeones.store')->middleware('auth');
