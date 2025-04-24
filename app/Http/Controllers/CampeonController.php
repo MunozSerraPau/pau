@@ -2,8 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Models\Campeon;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class CampeonController extends Controller
 {

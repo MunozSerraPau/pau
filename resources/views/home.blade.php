@@ -14,19 +14,36 @@
         <x-header />
 
         <main class="container d-flex flex-column align-items-center my-5 floating-panel">
-            <div>
-                <h1 class="text-center mb-5 text-white">INDEX</h1>
-                <x-search-bar />
-                <div class="mb-3">
-                    <label for="perPage" class="form-label text-white">Campeones por página:</label>
-                    <select id="perPage" class="form-select">
-                        <option value="9" selected>9</option>
-                        <option value="12">12</option>
-                        <option value="15">15</option>
+            <div class="">
+                <h1>HOME</h1>
+                <p>Esta es la página de Home.</p>
+                
+                @php
+                    $allowedValues = [9, 12, 15]; // Valores permitidos
+                    $perPage = in_array(request('perPage'), $allowedValues) ? request('perPage') : 9; // Validar valor
+                @endphp
+
+                <form method="GET" action="{{ route('home') }}" class="mb-4" id="searchForm">
+                    <label for="perPage">Campeones por página:</label>
+                    <select name="perPage" id="perPage" onchange="this.form.submit()">
+                        <option value="9" {{ $perPage == 9 ? 'selected' : '' }}>9</option>
+                        <option value="12" {{ $perPage == 12 ? 'selected' : '' }}>12</option>
+                        <option value="15" {{ $perPage == 15 ? 'selected' : '' }}>15</option>
                     </select>
-                </div>
+
+                    <label for="order" class="ms-3">Ordenar por:</label>
+                    <select name="order" id="order" onchange="this.form.submit()">
+                        <option value="asc" {{ $order == 'asc' ? 'selected' : '' }}>Ascendente</option>
+                        <option value="desc" {{ $order == 'desc' ? 'selected' : '' }}>Descendente</option>
+                    </select>
+
+                    <label for="search" class="ms-3">Buscar:</label>
+                    <input type="text" id="search" name="search" class="form-control d-inline-block w-auto" 
+                           placeholder="Buscar campeones..." value="{{ request('search') }}">
+                </form>
+
                 <div id="campeones-list">
-                    <x-campeones-list :campeones="$campeones" /> <!-- Pasamos la variable completa -->
+                    <x-campeones-list :perPage="$perPage" :order="$order" />
                 </div>
             </div>
         </main>
@@ -55,5 +72,24 @@
         </script>
 
         <x-footer />
+
+        <script>
+            document.getElementById('searchForm').addEventListener('submit', function (e) {
+                e.preventDefault(); // Prevenir el envío del formulario
+            });
+
+            document.getElementById('search').addEventListener('input', function () {
+                const search = this.value;
+                const order = document.getElementById('order').value;
+                const perPage = document.getElementById('perPage').value;
+
+                fetch(`{{ route('search-campeones') }}?search=${search}&order=${order}&perPage=${perPage}`)
+                    .then(response => response.text())
+                    .then(html => {
+                        document.getElementById('campeones-list').innerHTML = html;
+                    })
+                    .catch(error => console.error('Error:', error));
+            });
+        </script>
     </body>
 </html>

@@ -18,3 +18,7 @@
 <div class="mt-4">
     {{ $campeones->links() }} <!-- Enlaces de paginación -->
 </div>
+
+<div class="d-flex justify-content-center mt-4">
+    {!! $campeones->appends(request()->query())->links() !!}
+</div>
