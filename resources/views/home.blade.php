@@ -7,6 +7,7 @@
         
         <link rel="stylesheet" href="{{ asset('css/global.css') }}" >
 
+        <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
     </head>
@@ -16,79 +17,70 @@
         <main class="container d-flex flex-column align-items-center my-5 floating-panel">
             <div class="">
                 <h1>HOME</h1>
-                <p>Esta es la página de Home.</p>
-                
-                @php
-                    $allowedValues = [9, 12, 15]; // Valores permitidos
-                    $perPage = in_array(request('perPage'), $allowedValues) ? request('perPage') : 9; // Validar valor
-                @endphp
-
-                <form method="GET" action="{{ route('home') }}" class="mb-4" id="searchForm">
-                    <label for="perPage">Campeones por página:</label>
-                    <select name="perPage" id="perPage" onchange="this.form.submit()">
-                        <option value="9" {{ $perPage == 9 ? 'selected' : '' }}>9</option>
-                        <option value="12" {{ $perPage == 12 ? 'selected' : '' }}>12</option>
-                        <option value="15" {{ $perPage == 15 ? 'selected' : '' }}>15</option>
-                    </select>
-
-                    <label for="order" class="ms-3">Ordenar por:</label>
-                    <select name="order" id="order" onchange="this.form.submit()">
-                        <option value="asc" {{ $order == 'asc' ? 'selected' : '' }}>Ascendente</option>
-                        <option value="desc" {{ $order == 'desc' ? 'selected' : '' }}>Descendente</option>
-                    </select>
-
-                    <label for="search" class="ms-3">Buscar:</label>
-                    <input type="text" id="search" name="search" class="form-control d-inline-block w-auto" 
-                           placeholder="Buscar campeones..." value="{{ request('search') }}">
-                </form>
+                <div class="form-row mb-3">
+                    <div class="col">
+                        <input type="text" id="search" class="form-control" placeholder="Buscar por nombre...">
+                    </div>
+                    <div class="col">
+                        <select id="perPage" class="form-control">
+                            <option value="9" selected>9 por página</option>
+                            <option value="12">12 por página</option>
+                            <option value="15">15 por página</option>
+                        </select>
+                    </div>
+                    <div class="col">
+                        <select id="sortOrder" class="form-control">
+                            <option value="asc" selected>Orden Ascendente</option>
+                            <option value="desc">Orden Descendente</option>
+                        </select>
+                    </div>
+                </div>
 
                 <div id="campeones-list">
-                    <x-campeones-list :perPage="$perPage" :order="$order" />
+                    <!-- Aquí se cargarán los campeones -->
                 </div>
             </div>
         </main>
 
-        <script>
-            const perPageSelect = document.getElementById('perPage');
-            const searchInput = document.querySelector('input[name="query"]');
-
-            function fetchCampeones() {
-                const query = searchInput.value;
-                const perPage = perPageSelect.value;
-
-                fetch(`{{ route('campeones.search') }}?query=${query}&perPage=${perPage}`, {
-                    headers: {
-                        'X-Requested-With': 'XMLHttpRequest'
-                    }
-                })
-                .then(response => response.text())
-                .then(html => {
-                    document.getElementById('campeones-list').innerHTML = html;
-                });
-            }
-
-            perPageSelect.addEventListener('change', fetchCampeones);
-            searchInput.addEventListener('input', fetchCampeones);
-        </script>
-
         <x-footer />
 
         <script>
-            document.getElementById('searchForm').addEventListener('submit', function (e) {
-                e.preventDefault(); // Prevenir el envío del formulario
-            });
+            function fetchCampeones(page = 1) {
+                let search = $('#search').val();
+                let perPage = $('#perPage').val();
+                let sortOrder = $('#sortOrder').val();
 
-            document.getElementById('search').addEventListener('input', function () {
-                const search = this.value;
-                const order = document.getElementById('order').value;
-                const perPage = document.getElementById('perPage').value;
+                $.ajax({
+                    url: "{{ route('campeones.fetch') }}",
+                    type: "GET",
+                    data: {
+                        search: search,
+                        per_page: perPage,
+                        sort: sortOrder,
+                        page: page
+                    },
+                    success: function(data) {
+                        $('#campeones-list').html(data);
+                    }
+                });
+            }
 
-                fetch(`{{ route('search-campeones') }}?search=${search}&order=${order}&perPage=${perPage}`)
-                    .then(response => response.text())
-                    .then(html => {
-                        document.getElementById('campeones-list').innerHTML = html;
-                    })
-                    .catch(error => console.error('Error:', error));
+            $(document).ready(function() {
+                fetchCampeones();
+
+                $('#search').on('keyup', function() {
+                    fetchCampeones();
+                });
+
+                $('#perPage, #sortOrder').on('change', function() {
+                    fetchCampeones();
+                });
+
+                $(document).on('click', '.pagination a', function(e) {
+                    e.preventDefault();
+                    let page = $(this).attr('href').split('page=')[1];
+                    fetchCampeones(page);
+                });
             });
         </script>
     </body>

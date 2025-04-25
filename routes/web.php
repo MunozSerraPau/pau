@@ -15,17 +15,13 @@ use App\Http\Controllers\PerfilController;
 use App\Http\Controllers\EquipoController;
 
 use App\Http\Controllers\Admin\UsuariController;
+use App\Http\Controllers\HomeController;
 
 
 
 // Home
-Route::get('/', function () {
-    $allowedValues = [9, 12, 15]; // Valores permitidos
-    $perPage = in_array(request('perPage'), $allowedValues) ? request('perPage') : 9; // Validar valor
-    $order = in_array(request('order'), ['asc', 'desc']) ? request('order') : 'asc'; // Validar orden
-
-    return view('home', compact('perPage', 'order'));
-})->name('home');
+Route::get('/', [HomeController::class, 'index'])->name('home');
+Route::get('/campeones', [HomeController::class, 'fetchCampeones'])->name('campeones.fetch');
 
 // Login
 Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
@@ -50,19 +46,6 @@ Route::post('/reset-password', [PasswordResetController::class, 'reset'])->name(
 Route::get('/register', [RegisterController::class, 'show'])->name('register');
 Route::post('/register', [RegisterController::class, 'store']);
 
-// Busqueda de campeones
-Route::get('/search-campeones', function () {
-    $search = request('search');
-    $order = request('order', 'asc');
-    $perPage = request('perPage', 9);
-
-    $campeones = Campeon::where('name', 'like', "%$search%")
-        ->orderBy('name', $order)
-        ->paginate($perPage);
-
-    return view('partials.campeones-list', compact('campeones'));
-})->name('search-campeones');
-Route::get('/campeones/search', [CampeonController::class, 'search'])->name('campeones.search');
 
 // Home user 
 Route::get('/home-users', [CampeonControllerLogin::class, 'index'])->name('home-users')->middleware('auth');
