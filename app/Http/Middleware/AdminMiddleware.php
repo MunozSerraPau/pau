@@ -9,11 +9,10 @@ class AdminMiddleware
 {
     public function handle($request, Closure $next)
     {
-        if (Auth::check() && Auth::user()->administrador) {
+        if (Auth::check() && Auth::user()->administrador == 1) {
             return $next($request);
         }
 
         abort(403, 'Accés no autoritzat');
     }
 }
-

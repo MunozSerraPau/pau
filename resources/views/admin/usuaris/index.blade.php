@@ -15,13 +15,17 @@
 
         <main class="container d-flex flex-column align-items-center my-5 floating-panel">
             <div class="container mt-5">
-                <h2>Llista d'usuaris</h2>
+                <h2>Administració d'Usuaris</h2>
 
                 @if(session('success'))
                     <div class="alert alert-success">{{ session('success') }}</div>
                 @endif
 
-                <table class="table table-bordered mt-3">
+                @if(session('error'))
+                    <div class="alert alert-danger">{{ session('error') }}</div>
+                @endif
+
+                <table class="table table-bordered mt-4">
                     <thead>
                         <tr>
                             <th>Nickname</th>
@@ -41,14 +45,20 @@
                             <td>{{ $usuari->correu }}</td>
                             <td>{{ $usuari->administrador ? 'Sí' : 'No' }}</td>
                             <td>
-                                <a href="{{ route('admin.usuaris.edit', $usuari->nickname) }}" class="btn btn-sm btn-primary">Editar</a>
+                                @if(!$usuari->administrador)
+                                <form action="{{ route('admin.usuaris.destroy', $usuari->nickname) }}" method="POST" onsubmit="return confirm('Estàs segur que vols eliminar aquest usuari?')">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="btn btn-danger btn-sm">Eliminar</button>
+                                </form>
+                                @else
+                                <span class="text-muted">Protegit</span>
+                                @endif
                             </td>
                         </tr>
                         @endforeach
                     </tbody>
                 </table>
-
-                {{ $usuaris->links() }}
             </div>
         </main>
 

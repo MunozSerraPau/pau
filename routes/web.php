@@ -14,6 +14,9 @@ use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\PerfilController;
 use App\Http\Controllers\EquipoController;
 
+use App\Http\Controllers\Admin\UsuariController;
+
+
 
 // Home
 Route::get('/', function () {
@@ -24,28 +27,26 @@ Route::get('/', function () {
     return view('home', compact('perPage', 'order'));
 })->name('home');
 
-
-//LOGIN / LOGOUT
-//Login
+// Login
 Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
 Route::post('/login', [LoginController::class, 'login']);
 
-//Logout
+// Logout
 Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 
-//Redirección a la página de inicio después de iniciar sesión
+// Redirección a la página de inicio después de iniciar sesión
 Route::get('/home-users', function () {
     return view('home-users');
 })->middleware('auth');;
 
-//Recuperar contraseña via correo electrónico
+// Recuperar contraseña via correo electrónico
 Route::get('/forgot-password', [PasswordResetController::class, 'showRequestForm'])->name('password.request');
 Route::post('/forgot-password', [PasswordResetController::class, 'sendResetLink'])->name('password.email');
 
 Route::get('/reset-password', [PasswordResetController::class, 'showResetForm'])->name('password.reset');
 Route::post('/reset-password', [PasswordResetController::class, 'reset'])->name('password.update');
 
-//Registro
+// Registro
 Route::get('/register', [RegisterController::class, 'show'])->name('register');
 Route::post('/register', [RegisterController::class, 'store']);
 
@@ -61,22 +62,20 @@ Route::get('/search-campeones', function () {
 
     return view('partials.campeones-list', compact('campeones'));
 })->name('search-campeones');
-
-
 Route::get('/campeones/search', [CampeonController::class, 'search'])->name('campeones.search');
 
 // Home user 
 Route::get('/home-users', [CampeonControllerLogin::class, 'index'])->name('home-users')->middleware('auth');
 Route::get('/campeones/ajax', [CampeonControllerLogin::class, 'ajax'])->name('campeones.ajax')->middleware('auth');
 
-//Editar Champions
+// Editar Champions
 Route::get('/campeones/{id}/editar', [CampeonControllerLogin::class, 'edit'])->name('campeones.edit')->middleware('auth');
 Route::post('/campeones/{id}/actualizar', [CampeonControllerLogin::class, 'update'])->name('campeones.update')->middleware('auth');
 
-//Eliminar Champions
+// Eliminar Champions
 Route::delete('/campeones/{id}/eliminar', [CampeonControllerLogin::class, 'destroy'])->name('campeones.destroy')->middleware('auth');
 
-//Crear Champion
+// Crear Champion
 Route::get('/campeones/crear', [CampeonControllerLogin::class, 'create'])->name('campeones.create')->middleware('auth');
 Route::post('/campeones/guardar', [CampeonControllerLogin::class, 'store'])->name('campeones.store')->middleware('auth');
 
@@ -84,24 +83,26 @@ Route::post('/campeones/guardar', [CampeonControllerLogin::class, 'store'])->nam
 // Vistas dentro del Login
 Route::middleware(['auth'])->group(function () {
 
-    // 🧑‍💼 Editar Perfil
+    // Editar Perfil
     Route::get('/perfil/editar', [PerfilController::class, 'edit'])->name('perfil.edit');
     Route::put('/perfil/actualizar', [PerfilController::class, 'update'])->name('perfil.update');
 
-    // 🔒 Cambiar contraseña
+    // Cambiar contraseña
     Route::get('/perfil/cambiar-contrasenya', [PerfilController::class, 'editPassword'])->name('perfil.password');
     Route::put('/perfil/cambiar-contrasenya', [PerfilController::class, 'updatePassword'])->name('perfil.password.update');
 
-    // 🛡️ Crear equipo
+    // Crear equipo
     Route::get('/equipos/crear')->name('equipos.create');
     Route::post('/equipos')->name('equipos.store');
 
-    // 👥 Ver equipos
+    // Ver equipos
     Route::get('/equipos')->name('equipos.index');
 
-    // 👁️ Ver equipo individual (detalles)
+    // Ver equipo individual (detalles)
     Route::get('/equipos/{equipo}')->name('equipos.show');
 
-    // 📝 Editar usuarios
-    Route::get('/admin/usuarios')->name('admin.usuaris.index');
+    // Administrar usuarios
+    Route::get('/admin/usuarios', [UsuariController::class, 'index'])->name('admin.usuaris.index');
+    Route::delete('/admin/usuarios/{nickname}', [UsuariController::class, 'destroy'])->name('admin.usuaris.destroy');
 });
+

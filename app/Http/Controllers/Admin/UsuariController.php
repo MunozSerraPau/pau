@@ -3,44 +3,37 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\Usuari;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
+use App\Models\Usuari;
 
 class UsuariController extends Controller
 {
-    // Mostrar lista de usuarios (solo admins)
+    public function __construct()
+    {        
+        $this->middleware(function ($request, $next) {
+            if (!Auth::check() || Auth::user()->administrador != 1) {
+                abort(403, 'Accés no autoritzat');
+            }
+            return $next($request);
+        });
+    }
+
     public function index()
     {
-        $usuaris = Usuari::paginate(10);
+        $usuaris = Usuari::orderBy('nickname')->get();
         return view('admin.usuaris.index', compact('usuaris'));
     }
 
-    // Mostrar formulario para editar
-    public function edit($nickname)
+    public function destroy($nickname)
     {
-        $usuari = Usuari::findOrFail($nickname);
-        return view('admin.usuaris.edit', compact('usuari'));
-    }
+        $usuari = Usuari::where('nickname', $nickname)->firstOrFail();
 
-    // Guardar los cambios
-    public function update(Request $request, $nickname)
-    {
-        $usuari = Usuari::findOrFail($nickname);
+        if ($usuari->administrador == 1) {
+            return redirect()->route('admin.usuaris.index')->with('error', 'No pots eliminar un administrador.');
+        }
 
-        $request->validate([
-            'nom' => 'nullable|string|max:50',
-            'cognoms' => 'required|string|max:100',
-            'correu' => 'required|email|unique:usuaris,correu,' . $nickname . ',nickname',
-            'administrador' => 'required|boolean',
-        ]);
-
-        $usuari->update([
-            'nom' => $request->nom,
-            'cognoms' => $request->cognoms,
-            'correu' => $request->correu,
-            'administrador' => $request->administrador,
-        ]);
-
-        return redirect()->route('admin.usuaris.index')->with('success', 'Usuari actualitzat correctament!');
+        $usuari->delete();
+        return redirect()->route('admin.usuaris.index')->with('success', 'Usuari eliminat correctament.');
     }
 }
