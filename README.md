@@ -18,14 +18,32 @@ Si us plau, revisa el teu correu electrònic, ja que l'arxiu `.env` t'ha estat e
 1. Clona aquest repositori a la teva màquina local.
 2. Col·loca l'arxiu `.env` a l'arrel del projecte.
 3. Instal·la les dependències del projecte executant:
-   ```bash
+    ```bash
    composer install
-   ```
+    ```
+4. Genera la clau de l'aplicació:
+    ```bash
+    php artisan key:generate
+    ```
+5. Configura la base de dades a l'arxiu .env i executa les migracions:
+    ```bash
+    php artisan migrate
+    ```
+6. Inicia el servidor de desenvolupament:
+    ```bash
+    php artisan serve
+    ```
 
-### Usuari: 
 
-PauMunozSerra
+### Usuari / Contrasenya: 
 
-### Contrasenya: 
+PauMunozSerra / P@ssw0rd
 
-P@ssw0rd
+### Versio Laravel:
+
+Laravel Framework 12.9.2 / ^12.0
+
+### Versio Laragon:
+
+Laragon 2025 v8.1.0 
+php 8.3.16
