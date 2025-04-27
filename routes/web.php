@@ -7,6 +7,8 @@ use App\Http\Controllers\CampeonControllerLogin;
 
 use App\Http\Controllers\PerfilController;
 
+use App\Http\Controllers\EquipoController;
+
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\PasswordResetController;
 use App\Http\Controllers\Auth\RegisterController;
@@ -66,15 +68,10 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/perfil/cambiar-contrasenya', [PerfilController::class, 'editPassword'])->name('perfil.password');
     Route::put('/perfil/cambiar-contrasenya', [PerfilController::class, 'updatePassword'])->name('perfil.password.update');
 
-    // Crear equipo
-    Route::get('/equipos/crear')->name('equipos.create');
-    Route::post('/equipos')->name('equipos.store');
-
-    // Ver equipos
-    Route::get('/equipos')->name('equipos.index');
-
-    // Ver equipo individual (detalles)
-    Route::get('/equipos/{equipo}')->name('equipos.show');
+    // Ver equipos y creearlos
+    Route::get('/equipos', [EquipoController::class, 'index'])->name('equipos.index');
+    Route::get('/equipos/crear', [EquipoController::class, 'create'])->name('equipos.create');
+    Route::post('/equipos', [EquipoController::class, 'store'])->name('equipos.store');
 
     // Administrar usuarios
     Route::get('/admin/usuarios', [UsuariController::class, 'index'])->name('admin.usuaris.index');
