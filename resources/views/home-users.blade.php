@@ -88,7 +88,5 @@
                 document.getElementById('search').addEventListener('input', () => loadCampeones());
             });
         </script>
-        
-
     </body>
 </html>

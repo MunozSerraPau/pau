@@ -32,9 +32,7 @@ Route::post('/login', [LoginController::class, 'login']);
 Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 
 // Redirección a la página de inicio después de iniciar sesión
-Route::get('/home-users', function () {
-    return view('home-users');
-})->middleware('auth');;
+Route::get('/home-users', function () { return view('home-users'); })->middleware('auth');;
 
 // Recuperar contraseña via correo electrónico
 Route::get('/forgot-password', [PasswordResetController::class, 'showRequestForm'])->name('password.request');
