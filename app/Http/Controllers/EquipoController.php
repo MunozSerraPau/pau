@@ -5,14 +5,15 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 
+use App\Models\Equip;
+
 class EquipoController extends Controller
 {
     public function index()
     {
-        $response = Http::get('https://ddragon.leagueoflegends.com/cdn/14.20.1/data/es_ES/champion.json');
-        $champions = $response->json()['data'];
+        $equipos = Equip::with('campeons')->get();
 
-        return view('equipos.index', compact('champions'));
+        return view('equipos.index', compact('equipos'));
     }
 
     public function create()

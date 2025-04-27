@@ -3,7 +3,7 @@
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <title>Editar Perfil</title>
+        <title>Llista Equips</title>
         
         <link rel="stylesheet" href="{{ asset('css/global.css') }}" >
 
@@ -15,7 +15,27 @@
 
         <main class="container d-flex flex-column align-items-center my-5 floating-panel">
             <div class="container mt-5">
-            <h2>Tots els Equips</h2>
+            <h1>Llistat d'e 'Equipos</h1>
+
+            @foreach ($equipos as $equip)
+                <div class="card mb-4 shadow-sm">
+                    <div class="card-header">
+                        <h2>{{ $equip->nom_equip }}</h2>
+                        <small>Creado el: {{ \Carbon\Carbon::parse($equip->data_creacio)->format('d/m/Y') }}</small>
+                    </div>
+
+                    <div class="card-body">
+                        <div class="row">
+                            @foreach ($equip->campeons as $campeon)
+                                <div class="col-md-2 text-center mb-3">
+                                    <img src="https://ddragon.leagueoflegends.com/cdn/15.1.1/img/champion/{{ $campeon->imgCampio }}" alt="{{ $campeon->nameCampio }}" class="img-fluid mb-2" style="max-height: 100px;">
+                                    <div>{{ $campeon->nameCampio }}</div>
+                                </div>
+                            @endforeach
+                        </div>
+                    </div>
+                </div>
+            @endforeach
 
 
             </div>
