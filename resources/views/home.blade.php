@@ -1,43 +1,48 @@
-<!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
-    <head>
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <title>Home</title>
-        
-        <link rel="stylesheet" href="{{ asset('css/global.css') }}" >
+<!DOCTYPE html> 
+<html>
+<head>
+    <title>Home Public</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    
+    <link rel="stylesheet" href="{{ asset('css/global.css') }}" >
 
-        <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
-        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
-    </head>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+</head>
     <body class="bg-light">
         <x-header />
 
         <main class="container d-flex flex-column align-items-center my-5 floating-panel">
             <div class="">
-                <h1>HOME</h1>
-                <div class="form-row mb-3">
-                    <div class="col">
-                        <input type="text" id="search" class="form-control" placeholder="Buscar por nombre...">
-                    </div>
-                    <div class="col">
-                        <select id="perPage" class="form-control">
-                            <option value="9" selected>9 por página</option>
-                            <option value="12">12 por página</option>
-                            <option value="15">15 por página</option>
+                <h1 class="text-white text-center mb-5">Tots els campions</h1>
+
+                <div class="mb-5 d-flex" style="justify-content: space-around;">
+                    <div>
+                        <label class="text-white">Mostrar per pàgina:</label>
+                        <select id="perPage">
+                            <option value="9" selected>9</option>
+                            <option value="12">12</option>
+                            <option value="15">15</option>
                         </select>
                     </div>
-                    <div class="col">
-                        <select id="sortOrder" class="form-control">
-                            <option value="asc" selected>Orden Ascendente</option>
-                            <option value="desc">Orden Descendente</option>
+                    
+                    <div>
+                        <label class="text-white">Cercar per nom:</label>
+                        <input type="text" id="search" placeholder="Escriu un nom">
+                    </div>
+
+                    <div>
+                        <label class="text-white">Ordenar:</label>
+                        <select id="order">
+                            <option value="asc" selected>A-Z</option>
+                            <option value="desc">Z-A</option>
                         </select>
                     </div>
                 </div>
 
-                <div id="campeones-list">
-                    <!-- Aquí se cargarán los campeones -->
+                <div id="champions-list">
+                    {{-- Aquí cargaremos los campeones con AJAX --}}
                 </div>
             </div>
         </main>
@@ -45,42 +50,33 @@
         <x-footer />
 
         <script>
-            function fetchCampeones(page = 1) {
-                let search = $('#search').val();
-                let perPage = $('#perPage').val();
-                let sortOrder = $('#sortOrder').val();
+            function loadCampeones(page = 1) {
+                let perPage = document.getElementById('perPage').value;
+                let order = document.getElementById('order').value;
+                let search = document.getElementById('search').value;
 
-                $.ajax({
-                    url: "{{ route('campeones.fetch') }}",
-                    type: "GET",
-                    data: {
-                        search: search,
-                        per_page: perPage,
-                        sort: sortOrder,
-                        page: page
-                    },
-                    success: function(data) {
-                        $('#campeones-list').html(data);
-                    }
-                });
+                fetch(`/campeones-public/ajax?page=${page}&perPage=${perPage}&order=${order}&search=${search}`)
+                    .then(res => res.json())
+                    .then(data => {
+                        document.getElementById('champions-list').innerHTML = data.view;
+
+                        document.querySelectorAll('.pagination a').forEach(link => {
+                            link.addEventListener('click', function (e) {
+                                e.preventDefault();
+                                const url = new URL(this.href);
+                                loadCampeones(url.searchParams.get('page'));
+                            });
+                        });
+                    });
             }
 
-            $(document).ready(function() {
-                fetchCampeones();
+            // Eventos
+            document.addEventListener('DOMContentLoaded', function () {
+                loadCampeones();
 
-                $('#search').on('keyup', function() {
-                    fetchCampeones();
-                });
-
-                $('#perPage, #sortOrder').on('change', function() {
-                    fetchCampeones();
-                });
-
-                $(document).on('click', '.pagination a', function(e) {
-                    e.preventDefault();
-                    let page = $(this).attr('href').split('page=')[1];
-                    fetchCampeones(page);
-                });
+                document.getElementById('perPage').addEventListener('change', () => loadCampeones());
+                document.getElementById('order').addEventListener('change', () => loadCampeones());
+                document.getElementById('search').addEventListener('input', () => loadCampeones());
             });
         </script>
     </body>

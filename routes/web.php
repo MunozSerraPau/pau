@@ -2,27 +2,22 @@
 
 use Illuminate\Support\Facades\Route;
 
-use App\Http\Controllers\Auth\LoginController;
-
-
 use App\Http\Controllers\CampeonController;
 use App\Http\Controllers\CampeonControllerLogin;
-use App\Http\Controllers\Auth\PasswordResetController;
-
-use App\Http\Controllers\Auth\RegisterController;
 
 use App\Http\Controllers\PerfilController;
-use App\Http\Controllers\EquipoController;
+
+use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\Auth\PasswordResetController;
+use App\Http\Controllers\Auth\RegisterController;
 
 use App\Http\Controllers\Admin\UsuariController;
-
-use App\Http\Controllers\HomeController;
 
 
 
 // Home
-Route::get('/', [HomeController::class, 'index'])->name('home');
-Route::get('/campeones', [HomeController::class, 'fetchCampeones'])->name('campeones.fetch');
+Route::get('/', [CampeonController::class, 'index'])->name('home');
+Route::get('/campeones-public/ajax', [CampeonController::class, 'ajax'])->name('campeones-public.ajax');
 
 // Login
 Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
@@ -46,24 +41,22 @@ Route::get('/register', [RegisterController::class, 'show'])->name('register');
 Route::post('/register', [RegisterController::class, 'store']);
 
 
-// Home user 
-Route::get('/home-users', [CampeonControllerLogin::class, 'index'])->name('home-users')->middleware('auth');
-Route::get('/campeones/ajax', [CampeonControllerLogin::class, 'ajax'])->name('campeones.ajax')->middleware('auth');
-
-// Editar Champions
-Route::get('/campeones/{id}/editar', [CampeonControllerLogin::class, 'edit'])->name('campeones.edit')->middleware('auth');
-Route::post('/campeones/{id}/actualizar', [CampeonControllerLogin::class, 'update'])->name('campeones.update')->middleware('auth');
-
-// Eliminar Champions
-Route::delete('/campeones/{id}/eliminar', [CampeonControllerLogin::class, 'destroy'])->name('campeones.destroy')->middleware('auth');
-
-// Crear Champion
-Route::get('/campeones/crear', [CampeonControllerLogin::class, 'create'])->name('campeones.create')->middleware('auth');
-Route::post('/campeones/guardar', [CampeonControllerLogin::class, 'store'])->name('campeones.store')->middleware('auth');
-
-
 // Vistas dentro del Login
 Route::middleware(['auth'])->group(function () {
+    // Home user 
+    Route::get('/home-users', [CampeonControllerLogin::class, 'index'])->name('home-users');
+    Route::get('/campeones/ajax', [CampeonControllerLogin::class, 'ajax'])->name('campeones.ajax');
+    
+    // Editar Champions
+    Route::get('/campeones/{id}/editar', [CampeonControllerLogin::class, 'edit'])->name('campeones.edit');
+    Route::post('/campeones/{id}/actualizar', [CampeonControllerLogin::class, 'update'])->name('campeones.update');
+    
+    // Eliminar Champions
+    Route::delete('/campeones/{id}/eliminar', [CampeonControllerLogin::class, 'destroy'])->name('campeones.destroy');
+    
+    // Crear Champion
+    Route::get('/campeones/crear', [CampeonControllerLogin::class, 'create'])->name('campeones.create');
+    Route::post('/campeones/guardar', [CampeonControllerLogin::class, 'store'])->name('campeones.store');
 
     // Editar Perfil
     Route::get('/perfil/editar', [PerfilController::class, 'edit'])->name('perfil.edit');

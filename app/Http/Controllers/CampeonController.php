@@ -2,30 +2,26 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Campeon;
 use Illuminate\Http\Request;
+use App\Models\Campeon;
 
 class CampeonController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $perPage = 9;
-        $campeones = Campeon::getAllPaginated($perPage);
-
-        return view('home', compact('campeones'));
+        return view('home');
     }
 
-    public function search(Request $request)
+    public function ajax(Request $request)
     {
-        $query = $request->input('query');
-        $perPage = $request->input('perPage', 9);
+        $perPage = $request->get('perPage', 9);
+        $order = $request->get('order', 'asc');
+        $search = $request->get('search', '');
 
-        $campeones = Campeon::searchByName($query, $perPage);
+        $campeones = Campeon::filterAndPaginate($search, $order, $perPage);
 
-        if ($request->ajax()) {
-            return view('components.campeones-list', ['campeones' => $campeones]);
-        }
-
-        return view('home', compact('campeones'));
+        return response()->json([
+            'view' => view('partials.champions-list-home', compact('campeones'))->render()
+        ]);
     }
 }
