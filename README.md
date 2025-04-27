@@ -6,8 +6,7 @@ Aquest projecte està desenvolupat utilitzant el framework Laravel. A continuaci
 
 ## Arxiu `.env`
 
-L'arxiu `.env` és fonamental per a la configuració del projecte, ja que conté les variables d'entorn necessàries perquè l'aplicació funcioni correctament. **Aquest arxiu no està inclòs al repositori per motius de seguretat.**  
-Si us plau, revisa el teu correu electrònic, ja que l'arxiu `.env` t'ha estat enviat allà. Assegura't de col·locar-lo a l'arrel del projecte abans de continuar amb la configuració.
+L'arxiu `.env` te informació privada pera ixo no està inclòs al repositori, per motius de seguretat. Ha estat enviat el teu correu electrònic. Assegura't de col·locar-lo a l'arrel del projecte abans de continuar amb la configuració.
 
 ## Codi QR
 
@@ -21,17 +20,17 @@ Si us plau, revisa el teu correu electrònic, ja que l'arxiu `.env` t'ha estat e
     ```bash
    composer install
     ```
-4. Genera la clau de l'aplicació:
-    ```bash
-    php artisan key:generate
-    ```
-5. Configura la base de dades a l'arxiu .env i executa les migracions:
+4. Configura la base de dades a l'arxiu .env i executa les migracions:
     ```bash
     php artisan migrate
     ```
-6. Inicia el servidor de desenvolupament:
+5. Inicia el servidor de desenvolupament:
     ```bash
     php artisan serve
+    ```
+6. Instal·la les dependències de Node.js:
+    ```bash
+    npm install
     ```
 
 
