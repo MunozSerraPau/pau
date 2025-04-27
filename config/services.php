@@ -34,12 +34,9 @@ return [
             'channel' => env('SLACK_BOT_USER_DEFAULT_CHANNEL'),
         ],
     ],
-
-    // Google reCAPTCHA
-    // https://www.google.com/recaptcha/admin
-    'recaptcha' => [
-        'site_key' => env('RECAPTCHA_SITE_KEY'),
-        'secret_key' => env('RECAPTCHA_SECRET_KEY'),
+    'captcha' => [
+        'sitekey' => env('CAPTCHA_SITEKEY'),
+        'secret' => env('CAPTCHA_SECRET'),
     ],
 
 ];

@@ -6,6 +6,7 @@
     <title>Login</title>
     <link rel="stylesheet" href="{{ asset('css/global.css') }}">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
 </head>
 <body class="bg-light">
     <x-header />
@@ -18,21 +19,28 @@
             @endif
             <form method="POST" action="{{ route('login') }}">
                 @csrf
+
                 <label>Nickname:</label>
                 <input type="text" name="nickname" value="{{ old('nickname', request()->cookie('nickname')) }}" required>
                 <br>
+
                 <label>Contrasenya:</label>
                 <input type="password" name="password" required>
                 <br>
+
                 <label>
                     <input type="checkbox" name="remember_nickname"> Recorda’m
                 </label>
                 <br>
-                <p>Has oblidat la contrasenya? <a href="{{ route('password.request') }}">Recuperar</a></p>
+
+                @if(session('login_attempts', 0) >= 3)
+                    <div class="g-recaptcha my-3" data-sitekey="{{ env('NOCAPTCHA_SITEKEY') }}"></div>
+                @endif
+
                 <button type="submit">Entrar</button>
             </form>
             @if ($errors->any())
-                <div>
+                <div style="color: red;">
                     <strong>Error:</strong> {{ $errors->first() }}
                 </div>
             @endif
