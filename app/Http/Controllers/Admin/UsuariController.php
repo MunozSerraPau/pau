@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Http\Request;
 use App\Models\Usuari;
 
 class UsuariController extends Controller
@@ -21,19 +20,18 @@ class UsuariController extends Controller
 
     public function index()
     {
-        $usuaris = Usuari::orderBy('nickname')->get();
+        $usuaris = Usuari::getAllOrdered();
         return view('admin.usuaris.index', compact('usuaris'));
     }
 
     public function destroy($nickname)
     {
-        $usuari = Usuari::where('nickname', $nickname)->firstOrFail();
+        $result = Usuari::deleteByNickname($nickname);
 
-        if ($usuari->administrador == 1) {
+        if ($result === 'is_admin') {
             return redirect()->route('admin.usuaris.index')->with('error', 'No pots eliminar un administrador.');
         }
 
-        $usuari->delete();
         return redirect()->route('admin.usuaris.index')->with('success', 'Usuari eliminat correctament.');
     }
 }

@@ -4,10 +4,7 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Validator;
-use Illuminate\Support\Str;
+use App\Models\Usuari;
 
 class RegisterController extends Controller
 {
@@ -45,29 +42,26 @@ class RegisterController extends Controller
             ],
             'imgPerfil' => 'nullable|image|max:2048', // Opcional, máx 2MB
         ]);
-    
+
         $imgPath = '/vistaGlobal/imgPerfil/default.png';
-    
+
         if ($request->hasFile('imgPerfil')) {
             $img = $request->file('imgPerfil');
             $filename = uniqid() . '.' . $img->getClientOriginalExtension();
             $img->move(public_path('vistaGlobal/imgPerfil'), $filename);
             $imgPath = '/vistaGlobal/imgPerfil/' . $filename;
         }
-    
-        DB::table('usuaris')->insert([
-            'nom' => $request->nom,
-            'cognoms' => $request->cognoms,
-            'correu' => $request->correu,
-            'nickname' => $request->nickname,
-            'contrasenya' => password_hash($request->contrasenya, PASSWORD_DEFAULT),
-            'xarxa_social' => '',
-            'administrador' => 0,
-            'imgPerfil' => $imgPath,
-            'token_recuperar' => null,
-            'token_expiration' => null,
-        ]);
-    
+
+        // Usamos el Modelo para registrar al usuario
+        Usuari::registerNewUser(
+            $request->nom,
+            $request->cognoms,
+            $request->correu,
+            $request->nickname,
+            $request->contrasenya,
+            $imgPath
+        );
+
         return redirect()->route('login')->with('success', 'Compte creat correctament. Pots iniciar sessió.');
     }
 }

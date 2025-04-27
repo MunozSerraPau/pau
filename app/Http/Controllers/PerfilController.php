@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Models\Usuari;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Hash;
 
 class PerfilController extends Controller
 {
@@ -27,12 +26,8 @@ class PerfilController extends Controller
             'correu' => 'required|email|unique:usuaris,correu,' . $user->nickname . ',nickname',
         ]);
 
-        
-        $user->update([
-            'nom' => $request->nom,
-            'cognoms' => $request->cognoms,
-            'correu' => $request->correu,
-        ]);
+        // Usamos el Modelo para actualizar perfil
+        $user->updateProfile($request->nom, $request->cognoms, $request->correu);
 
         return redirect()->route('home-users')->with('success', 'Perfil actualitzat correctament!');
     }
@@ -62,12 +57,11 @@ class PerfilController extends Controller
 
         $user = Auth::user();
 
-        if (!Hash::check($request->current_password, $user->contrasenya)) {
+        $result = $user->updatePassword($request->current_password, $request->new_password);
+
+        if ($result === false) {
             return back()->withErrors(['current_password' => 'La contrasenya actual no és correcta']);
         }
-
-        $user->contrasenya = Hash::make($request->new_password);
-        $user->save();
 
         return redirect()->route('home-users')->with('success', 'Contrasenya actualitzada correctament!');
     }

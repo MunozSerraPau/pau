@@ -18,9 +18,7 @@ class HomeController extends Controller
         $sortOrder = $request->input('sort', 'asc');
         $search = $request->input('search', '');
 
-        $campeones = Campeon::where('name', 'like', '%' . $search . '%')
-            ->orderBy('name', $sortOrder)
-            ->paginate($perPage);
+        $campeones = Campeon::filterAndPaginate($search, $sortOrder, $perPage);
 
         return view('partials.campeones', compact('campeones'))->render();
     }

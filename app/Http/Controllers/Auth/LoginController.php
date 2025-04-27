@@ -22,7 +22,7 @@ class LoginController extends Controller
         ]);
 
         // Buscar al usuario por nickname
-        $usuari = Usuari::where('nickname', $credentials['nickname'])->first();
+        $usuari = Usuari::findByNickname($credentials['nickname']);
 
         // Comprobar si el usuario existe y verificar la contraseña
         if ($usuari && password_verify($credentials['password'], $usuari->contrasenya)) {

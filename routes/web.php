@@ -1,7 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Models\Campeon;
+
 use App\Http\Controllers\Auth\LoginController;
 
 
@@ -15,6 +15,7 @@ use App\Http\Controllers\PerfilController;
 use App\Http\Controllers\EquipoController;
 
 use App\Http\Controllers\Admin\UsuariController;
+
 use App\Http\Controllers\HomeController;
 
 

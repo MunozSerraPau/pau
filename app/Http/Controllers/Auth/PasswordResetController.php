@@ -6,9 +6,6 @@ use App\Http\Controllers\Controller;
 use App\Models\Usuari;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
-use Illuminate\Support\Str;
-use Illuminate\Support\Carbon;
-use Illuminate\Support\Facades\Hash;
 
 class PasswordResetController extends Controller
 {
@@ -21,13 +18,10 @@ class PasswordResetController extends Controller
     {
         $request->validate(['correu' => 'required|email']);
 
-        $usuari = Usuari::where('correu', $request->correu)->first();
+        $usuari = Usuari::findByEmail($request->correu);
 
         if ($usuari) {
-            $token = Str::random(64);
-            $usuari->token_recuperar = $token;
-            $usuari->token_expiration = Carbon::now()->addMinutes(10);
-            $usuari->save();
+            $token = $usuari->generatePasswordResetToken();
 
             $link = url("/reset-password?token=$token");
 
@@ -53,18 +47,13 @@ class PasswordResetController extends Controller
             'password' => 'required|confirmed|min:6',
         ]);
 
-        $usuari = Usuari::where('token_recuperar', $request->token)
-                        ->where('token_expiration', '>', Carbon::now())
-                        ->first();
+        $usuari = Usuari::findValidToken($request->token);
 
         if (!$usuari) {
             return back()->withErrors(['token' => 'Token invàlid o caducat.']);
         }
 
-        $usuari->contrasenya = password_hash($request->password, PASSWORD_DEFAULT);
-        $usuari->token_recuperar = null;
-        $usuari->token_expiration = null;
-        $usuari->save();
+        $usuari->resetPassword($request->password);
 
         return redirect('/login')->with('status', 'Contrasenya canviada correctament.');
     }
